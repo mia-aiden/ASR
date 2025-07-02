@@ -131,7 +131,7 @@ def run_hyperparameter_search(train_dataset, collate_function):
     study = optuna.create_study(direction="minimize", sampler=TPESampler(seed=SEED))
     study.optimize(
         lambda trial: objective(trial, train_dataset, collate_function, device),
-        n_trials=50
+        n_trials=2
     )
 
     # 获取基础配置和最佳参数

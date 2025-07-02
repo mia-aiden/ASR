@@ -17,7 +17,7 @@ from src.trainers.taid_trainer import TAIDDistillationTrainer
 # 导入超参数搜索功能
 from scripts.hyperparameter_search import run_hyperparameter_search
 
-def run_training(config_path: str = "configs/default_config.yaml") -> float:
+def run_training(config_path: str = "../configs/default_config.yaml") -> float:
     """运行完整训练流程：超参数优化 + 训练
     
     Args:
@@ -50,12 +50,12 @@ def run_training(config_path: str = "configs/default_config.yaml") -> float:
     data_loader = ASRDataLoader(
         processor=processor,
         batch_size=cfg.training.batch_size,
-        num_workers=cfg.training.num_workers,
+        num_workers=cfg.data.num_workers,
         max_frames=cfg.data.max_frames,
         sample_rate=cfg.data.sample_rate,
-        pin_memory=True,
-        persistent_workers=True,
-        prefetch_factor=2
+        pin_memory=cfg.data.pin_memory,
+        persistent_workers=cfg.data.persistent_workers,
+        prefetch_factor=cfg.data.prefetch_factor
     )
     
     # 5. 第一步：超参数优化
@@ -74,12 +74,12 @@ def run_training(config_path: str = "configs/default_config.yaml") -> float:
     data_loader = ASRDataLoader(
         processor=processor,
         batch_size=cfg.training.batch_size,
-        num_workers=cfg.training.num_workers,
+        num_workers=cfg.data.num_workers,
         max_frames=cfg.data.max_frames,
         sample_rate=cfg.data.sample_rate,
-        pin_memory=True,
-        persistent_workers=True,
-        prefetch_factor=2
+        pin_memory=cfg.data.pin_memory,
+        persistent_workers=cfg.data.persistent_workers,
+        prefetch_factor=cfg.data.prefetch_factor
     )
     train_loader = data_loader.get_loader(train_ds, shuffle=True, drop_last=True)
     val_loader = data_loader.get_loader(val_ds, shuffle=False, drop_last=False)

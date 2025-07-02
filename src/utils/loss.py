@@ -45,13 +45,14 @@ def compute_loss_with_taid(student, teacher, proj, feats, labels, mask, step, co
     if config.distillation.kl_weight > 0:
         student_logits = student_outputs.logits
         with torch.no_grad():
-            teacher_outputs = teacher(input_features=feats.cpu(), attention_mask=mask.cpu())
+            teacher_outputs = teacher(input_features=feats.cpu(), attention_mask=mask.cpu(), labels=labels.cpu())
             teacher_logits = teacher_outputs.logits.to(device)
             
-        # 确保长度一致
+        # 确保长度和词汇表大小一致
         min_len = min(student_logits.size(1), teacher_logits.size(1))
-        student_logits = student_logits[:, :min_len, :]
-        teacher_logits = teacher_logits[:, :min_len, :]
+        min_vocab = min(student_logits.size(2), teacher_logits.size(2))
+        student_logits = student_logits[:, :min_len, :min_vocab]
+        teacher_logits = teacher_logits[:, :min_len, :min_vocab]
         
         # 计算概率分布
         student_probs = F.softmax(student_logits / config.distillation.temperature, dim=-1)
@@ -73,7 +74,7 @@ def compute_loss_with_taid(student, teacher, proj, feats, labels, mask, step, co
     if config.distillation.hidden_beta > 0 and proj is not None:
         student_hidden = student_outputs.encoder_last_hidden_state
         with torch.no_grad():
-            teacher_full = teacher(input_features=feats.cpu(), attention_mask=mask.cpu(),
+            teacher_full = teacher(input_features=feats.cpu(), attention_mask=mask.cpu(), labels=labels.cpu(),
                                    output_hidden_states=True)
             teacher_hidden = teacher_full.encoder_last_hidden_state.to(device)
         projected = proj(student_hidden)
