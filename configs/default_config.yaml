@@ -1,0 +1,74 @@
+data:
+  root_dir: /root/autodl-tmp/dataset
+  sample_cap: 4000
+  val_ratio: 0.2
+  batch_size: 4
+  max_frames: 3000
+  sample_rate: 16000
+  pin_memory: true
+  persistent_workers: true
+  prefetch_factor: 2
+  num_workers: 2
+model:
+  teacher_model: openai/whisper-large-v2
+  student_model: distil-whisper/distil-small.en
+  student_hidden_dim: 768
+  teacher_hidden_dim: 1280
+training:
+  max_steps: 1600
+  warmup_steps: 320
+  eval_steps: 100
+  log_steps: 50
+  batch_size: 16
+  grad_accum: 4
+  max_grad_norm: 0.5
+optimizer:
+  lr: 0.0009838979433528193
+  weight_decay: 0.01
+lora:
+  r: 32
+  alpha: 32
+  dropout: 0.08899690296270608
+  target_modules:
+  - model.decoder.layers.0.q_proj
+  - model.decoder.layers.0.k_proj
+  - model.decoder.layers.0.v_proj
+  - model.decoder.layers.0.out_proj
+  - model.decoder.layers.1.q_proj
+  - model.decoder.layers.1.k_proj
+  - model.decoder.layers.1.v_proj
+  - model.decoder.layers.1.out_proj
+  - model.decoder.layers.2.q_proj
+  - model.decoder.layers.2.k_proj
+  - model.decoder.layers.2.v_proj
+  - model.decoder.layers.2.out_proj
+  - model.decoder.layers.3.q_proj
+  - model.decoder.layers.3.k_proj
+  - model.decoder.layers.3.v_proj
+  - model.decoder.layers.3.out_proj
+  - model.decoder.layers.4.q_proj
+  - model.decoder.layers.4.k_proj
+  - model.decoder.layers.4.v_proj
+  - model.decoder.layers.4.out_proj
+  - model.decoder.layers.5.q_proj
+  - model.decoder.layers.5.k_proj
+  - model.decoder.layers.5.v_proj
+  - model.decoder.layers.5.out_proj
+  - model.decoder.layers.0.fc1
+  - model.decoder.layers.0.fc2
+  - model.decoder.layers.1.fc1
+  - model.decoder.layers.1.fc2
+  - model.decoder.layers.2.fc1
+  - model.decoder.layers.2.fc2
+  - model.decoder.layers.3.fc1
+  - model.decoder.layers.3.fc2
+  - model.decoder.layers.4.fc1
+  - model.decoder.layers.4.fc2
+  - model.decoder.layers.5.fc1
+  - model.decoder.layers.5.fc2
+distillation:
+  temperature: 3.3249392156063373
+  kl_weight: 0.4055141390214919
+  hidden_beta: 2.1853017811308755
+output:
+  dir: ./distil-whisper-lora-run5

@@ -1,0 +1,11 @@
+{
+  "lr": 0.0009838979433528193,
+  "lora_dropout": 0.08899690296270608,
+  "temperature": 3.3249392156063373,
+  "kl_weight": 0.4055141390214919,
+  "hidden_beta": 2.1853017811308755,
+  "grad_accum": 4,
+  "batch_size": 16,
+  "lora_r": 32,
+  "lora_alpha": 32
+}
