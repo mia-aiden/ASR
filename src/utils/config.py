@@ -52,10 +52,19 @@ class LoRAConfig:
 
 
 @dataclass
+class TAIDConfig:
+    """TAID (Temperature-Aware Interpolation Distillation) 配置"""
+    start: float
+    mid: float
+    end: float
+
+
+@dataclass
 class DistillationConfig:
     temperature: float
     kl_weight: float
     hidden_beta: float
+    taid: TAIDConfig
 
 
 @dataclass
@@ -83,13 +92,18 @@ class Config:
         with open(yaml_path, 'r', encoding='utf-8') as f:
             config_dict = yaml.safe_load(f)
 
+        # 处理 TAID 配置
+        distill_config = config_dict['distillation']
+        taid_config = TAIDConfig(**distill_config.pop('taid'))
+        distill_config['taid'] = taid_config
+
         return cls(
             data=DataConfig(**config_dict['data']),
             model=ModelConfig(**config_dict['model']),
             training=TrainingConfig(**config_dict['training']),
             optimizer=OptimizerConfig(**config_dict['optimizer']),
             lora=LoRAConfig(**config_dict['lora']),
-            distillation=DistillationConfig(**config_dict['distillation']),
+            distillation=DistillationConfig(**distill_config),
             output=OutputConfig(**config_dict['output'])
         )
 
@@ -101,7 +115,10 @@ class Config:
             'training': self.training.__dict__,
             'optimizer': self.optimizer.__dict__,
             'lora': self.lora.__dict__,
-            'distillation': self.distillation.__dict__,
+            'distillation': {
+                **{k: v for k, v in self.distillation.__dict__.items() if k != 'taid'},
+                'taid': self.distillation.taid.__dict__
+            },
             'output': self.output.__dict__
         }
 
