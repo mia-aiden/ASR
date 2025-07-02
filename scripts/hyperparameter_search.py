@@ -131,7 +131,7 @@ def run_hyperparameter_search(train_dataset, collate_function):
     study = optuna.create_study(direction="minimize", sampler=TPESampler(seed=SEED))
     study.optimize(
         lambda trial: objective(trial, train_dataset, collate_function, device),
-        n_trials=2
+        n_trials=50
     )
 
     # 获取基础配置和最佳参数
@@ -217,9 +217,3 @@ def run_hyperparameter_search(train_dataset, collate_function):
     print(f"  lora_alpha: {best_params['lora_alpha']}")
 
     return updated_config
-
-
-if __name__ == "__main__":
-    print("Hyperparameter search script")
-    print("需要从 Cell 1 获取 train_ds 和 safe_collate_fn")
-    print("请在 Jupyter notebook 中调用此脚本的 run_hyperparameter_search 函数") 
