@@ -40,7 +40,7 @@ def compute_loss_with_taid(student, teacher, proj, feats, labels, mask, step, co
     core = student.model if isinstance(student, PeftModel) else student
     student_outputs = core(input_features=feats, attention_mask=mask,
                           labels=labels, output_hidden_states=True)
-    total_loss = student_outputs.loss
+    total_loss = 0.8 * student_outputs.loss if config.distillation.kl_weight > 0 else student_outputs.loss
 
     if config.distillation.kl_weight > 0:
         student_logits = student_outputs.logits
